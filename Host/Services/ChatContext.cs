@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Models;
 
-namespace Host.Models;
+namespace Host.Services;
 
 public partial class ChatContext : DbContext
 {
@@ -27,13 +28,13 @@ public partial class ChatContext : DbContext
             .HasCharSet("utf8mb4");
 
         modelBuilder.Entity<Chat>(entity => {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            entity.HasKey(e => e.ID).HasName("PRIMARY");
 
             entity.ToTable("chat");
 
             entity.HasIndex(e => e.CreatorId, "FK_chat_CreatorID");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.ID)
                 .HasMaxLength(36)
                 .HasDefaultValueSql("''")
                 .HasColumnName("ID");
@@ -78,7 +79,7 @@ public partial class ChatContext : DbContext
         });
 
         modelBuilder.Entity<Message>(entity => {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            entity.HasKey(e => e.ID).HasName("PRIMARY");
 
             entity.ToTable("message");
 
@@ -86,7 +87,7 @@ public partial class ChatContext : DbContext
 
             entity.HasIndex(e => e.SenderId, "FK_message_senderID");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.ID)
                 .HasMaxLength(36)
                 .HasDefaultValueSql("''")
                 .HasColumnName("ID");
@@ -114,11 +115,11 @@ public partial class ChatContext : DbContext
         });
 
         modelBuilder.Entity<User>(entity => {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            entity.HasKey(e => e.ID).HasName("PRIMARY");
 
             entity.ToTable("user");
 
-            entity.Property(e => e.Id)
+            entity.Property(e => e.ID)
                 .HasMaxLength(36)
                 .HasDefaultValueSql("''")
                 .HasColumnName("ID");

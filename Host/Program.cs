@@ -1,4 +1,3 @@
-using Host.Models;
 using Host.Services;
 using Host.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

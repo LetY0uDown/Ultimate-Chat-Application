@@ -1,14 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-namespace Host.Models;
+namespace Models;
 
-public partial class User
+[Table("Users")]
+public partial class User : Entity
 {
-    public string Id { get; set; } = null!;
-
     public string Username { get; set; } = null!;
 
     public string Password { get; set; } = null!;
+
+    public string Email { get; set; } = null!;
 
     public string? Description { get; set; }
 

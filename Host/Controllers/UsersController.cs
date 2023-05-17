@@ -1,9 +1,9 @@
-﻿using Host.Models;
+﻿using Host.Services;
 using Host.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace Host.Controllers;
 
@@ -13,14 +13,14 @@ public class UsersController : ControllerBase
     private readonly ChatContext _context;
     private readonly IPasswordEncoder _passwordEncoder;
 
-    public UsersController(ChatContext context, IPasswordEncoder passwordEncoder)
+    public UsersController (ChatContext context, IPasswordEncoder passwordEncoder)
     {
         _context = context;
         _passwordEncoder = passwordEncoder;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<User>>> GetUsers ()
     {
         try {
             return await _context.Users.ToListAsync();
@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpPut("{userID}/Update"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPut("{userID}/Update"), Authorize]
     public async Task<ActionResult> UpdateUser ([FromBody] User user)
     {
         try {
@@ -39,13 +39,12 @@ public class UsersController : ControllerBase
             await _context.SaveChangesAsync();
 
             return NoContent();
-
-       } catch (Exception ex) {
+        } catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
 
-    [HttpDelete("{userID}/Delete"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpDelete("{userID}/Delete"), Authorize]
     public async Task<ActionResult> DeleteUser ([FromRoute] string userID)
     {
         try {
@@ -55,7 +54,6 @@ public class UsersController : ControllerBase
             await _context.SaveChangesAsync();
 
             return NoContent();
-
         } catch (Exception ex) {
             return Problem(ex.Message);
         }

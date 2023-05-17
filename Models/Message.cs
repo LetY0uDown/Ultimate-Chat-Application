@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Host.Models;
+namespace Models;
 
-public partial class Message
+[Table("Messages")]
+public partial class Message : Entity
 {
-    public string Id { get; set; } = null!;
-
     public string? SenderId { get; set; }
 
     public string ChatId { get; set; } = null!;

@@ -1,10 +1,10 @@
-﻿using Host.Models;
-using Host.Services;
+﻿using Host.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
 namespace Host.Controllers;
 
@@ -15,7 +15,7 @@ public class ChatsController : ControllerBase
     private readonly ChatContext _context;
     private readonly IHubContext<ChatsHub> _hub;
 
-    public ChatsController(ChatContext context, IHubContext<ChatsHub> hub)
+    public ChatsController (ChatContext context, IHubContext<ChatsHub> hub)
     {
         _context = context;
         _hub = hub;
@@ -26,12 +26,13 @@ public class ChatsController : ControllerBase
     {
         try {
             return await _context.Chats.Include(c => c.Creator).ToListAsync();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), Authorize]
     public async Task<ActionResult> CreateChat ([FromBody] Chat chat)
     {
         try {
@@ -39,7 +40,7 @@ public class ChatsController : ControllerBase
                 _context.Users.Attach(chat.Creator);
             }
 
-            chat.Id = Guid.NewGuid().ToString();
+            chat.ID = Guid.NewGuid().ToString();
 
             await _context.Chats.AddAsync(chat);
             await _context.SaveChangesAsync();
@@ -48,16 +49,17 @@ public class ChatsController : ControllerBase
 
             return Ok();
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
 
-    [HttpDelete("{chatID}/Delete")]
+    [HttpDelete("{chatID}/Delete"), Authorize]
     public async Task<ActionResult> DeleteChat ([FromRoute] string chatID)
     {
         try {
-            var chat = await _context.Chats.SingleOrDefaultAsync(c => c.Id == chatID);
+            var chat = await _context.Chats.SingleOrDefaultAsync(c => c.ID == chatID);
 
             if (chat is null) {
                 return NotFound("Ошибка: чат не найден");
@@ -70,12 +72,13 @@ public class ChatsController : ControllerBase
 
             return NoContent();
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
 
-    [HttpPut("Edit")]
+    [HttpPut("Edit"), Authorize]
     public async Task<ActionResult> EditChat ([FromBody] Chat chat)
     {
         try {
@@ -83,13 +86,15 @@ public class ChatsController : ControllerBase
             await _context.SaveChangesAsync();
 
             return Ok();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
 
-    [HttpPost("{chatID}/Join/{userID}")]
-    public async Task<ActionResult> JoinChat ([FromRoute] string chatID, [FromRoute] string userID)
+    [HttpPost("{chatID}/Join/{userID}"), Authorize]
+    public async Task<ActionResult> JoinChat ([FromRoute] string chatID,
+                                              [FromRoute] string userID)
     {
         try {
             var chatMember = await _context.ChatMembers.FirstOrDefaultAsync(e => e.ChatId == chatID && e.MemberId == userID);
@@ -112,13 +117,15 @@ public class ChatsController : ControllerBase
 
             return Ok();
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
-    
-    [HttpPost("{chatID}/Leave/{userID}")]
-    public async Task<ActionResult> LeaveChat ([FromRoute] string chatID, [FromRoute] string userID)
+
+    [HttpPost("{chatID}/Leave/{userID}"), Authorize]
+    public async Task<ActionResult> LeaveChat ([FromRoute] string chatID,
+                                               [FromRoute] string userID)
     {
         try {
             var chatMember = await _context.ChatMembers.FirstOrDefaultAsync(e => e.ChatId == chatID && e.MemberId == userID);
@@ -132,16 +139,17 @@ public class ChatsController : ControllerBase
 
             return Ok();
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
 
-    [HttpGet("{chatID}/Messages")]
+    [HttpGet("{chatID}/Messages"), Authorize]
     public async Task<ActionResult<IEnumerable<Message>>> GetMessagesFromChat ([FromRoute] string chatID)
     {
         try {
-            var doesChatExist = await _context.Chats.AnyAsync(c => c.Id == chatID);
+            var doesChatExist = await _context.Chats.AnyAsync(c => c.ID == chatID);
 
             if (!doesChatExist) {
                 return NotFound("Чат не найден");
@@ -150,16 +158,17 @@ public class ChatsController : ControllerBase
             return await _context.Messages.Where(m => m.ChatId == chatID)
                                           .OrderBy(m => m.SendedDate)
                                           .ToListAsync();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
-    
-    [HttpGet("{chatID}/Members")]
+
+    [HttpGet("{chatID}/Members"), Authorize]
     public async Task<ActionResult<IEnumerable<Message>>> GetMembersFromChat ([FromRoute] string chatID)
     {
         try {
-            var doesChatExist = await _context.Chats.AnyAsync(c => c.Id == chatID);
+            var doesChatExist = await _context.Chats.AnyAsync(c => c.ID == chatID);
 
             if (!doesChatExist) {
                 return NotFound("Чат не найден");
@@ -167,17 +176,18 @@ public class ChatsController : ControllerBase
 
             var members = await _context.Users.Include(u => u.Chats)
                                               .Where(u => u.Chats
-                                              .Any(c => c.Id == chatID))
+                                              .Any(c => c.ID == chatID))
                                               .ToListAsync();
 
             return Ok(members);
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
 
-    [HttpPatch("{chatID}/Send/{userID}")]
+    [HttpPatch("{chatID}/Send/{userID}"), Authorize]
     public async Task<ActionResult> SendMessage ([FromRoute] string chatID,
                                                  [FromBody] string text,
                                                  [FromRoute] string userID)
@@ -186,7 +196,7 @@ public class ChatsController : ControllerBase
             var sender = await _context.Users.FindAsync(userID);
 
             var message = new Message {
-                Id = Guid.NewGuid().ToString(),
+                ID = Guid.NewGuid().ToString(),
                 Text = text,
                 SendedDate = DateTime.UtcNow,
                 Sender = sender,
@@ -201,13 +211,15 @@ public class ChatsController : ControllerBase
 
             return Ok();
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }
 
-    [HttpDelete("{chatID}/Delete/{messageID}")]
-    public async Task<ActionResult> DeleteMessage ([FromRoute] string chatID, [FromRoute] string messageID)
+    [HttpDelete("{chatID}/Delete/{messageID}"), Authorize]
+    public async Task<ActionResult> DeleteMessage ([FromRoute] string chatID,
+                                                   [FromRoute] string messageID)
     {
         try {
             var msg = await _context.Messages.FindAsync(messageID);
@@ -219,7 +231,8 @@ public class ChatsController : ControllerBase
 
             return Ok();
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return Problem(ex.Message);
         }
     }

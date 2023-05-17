@@ -1,9 +1,10 @@
-﻿namespace Host.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-public partial class Chat
+namespace Models;
+
+[Table("Chats")]
+public partial class Chat : Entity
 {
-    public string Id { get; set; } = null!;
-
     public string Title { get; set; } = null!;
 
     public byte[]? Picture { get; set; }
