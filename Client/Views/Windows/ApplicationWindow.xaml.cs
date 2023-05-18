@@ -33,6 +33,7 @@ public partial class ApplicationWindow : Window, IWindow
     async Task IWindow.Show ()
     {
         await _viewModel.Initialize();
+
         DataContext = _viewModel;
 
         InitializeComponent();

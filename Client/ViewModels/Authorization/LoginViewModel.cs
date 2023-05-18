@@ -1,4 +1,5 @@
 ﻿using Client.Core;
+using Client.Views.Windows;
 using Models;
 using System.Net;
 using System.Net.Http;
@@ -19,6 +20,7 @@ public sealed class LoginViewModel : ViewModel
     {
         _navigation = navigation;
         _requestBuilder = requestBuilder;
+
         LoginCommand = new(async o => {
             DangerText = string.Empty;
 
@@ -34,13 +36,13 @@ public sealed class LoginViewModel : ViewModel
                                 .ExecuteAsync(HttpMethod.Get);
 
             if (response.StatusCode != HttpStatusCode.OK) {
-                DangerText = response.Content;
+                DangerText = response.Content?.Replace("\"", "");
                 return;
             }
 
             App.AuthorizeData = Serializer.Deserialize<AuthorizeData>(response.Content);
 
-            DangerText = App.AuthorizeData.ID;
+            App.SetMainWindow<ApplicationWindow>();
         }, b => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password));
 
         RedirectToRegistrationCommand = new(async o => {

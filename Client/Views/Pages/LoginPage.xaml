@@ -30,24 +30,25 @@
             </Grid.RowDefinitions>
 
             <!-- Username -->
-            <Grid Margin="10">
-                <TextBox x:Name="usernameTB" Padding="15 5"
+            <Grid Margin="10 15">
+                <TextBox x:Name="usernameTB" Padding="15 0"
                          MaxLength="16" Style="{DynamicResource MaterialDesignFilledTextBox}"
                          Foreground="{DynamicResource MaterialDesignDarkForeground}"
                          FontSize="18"
                          Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <TextBlock Text="Имя Пользователя.." 
-                           Style="{StaticResource PlaceholderTextBlock}"
+                           Style="{DynamicResource PlaceholderTextBlock}"
+                           FontSize="{Binding ElementName=usernameTB, Path=FontSize}"
+                           Margin="{Binding ElementName=usernameTB, Path=Padding}"
                            IsEnabled="{Binding ElementName=usernameTB,
                                                 Path=Text,
                                                 Converter={StaticResource
-                                                           PlaceholderVisibilty}}"
-                           FontSize="{Binding ElementName=usernameTB, Path=FontSize}" />
+                                                           PlaceholderVisibilty}}"/>
             </Grid>
 
             <!-- Password -->
-            <Grid Margin="10" Grid.Row="1">
+            <Grid Margin="10 15" Grid.Row="1">
 
                 <PasswordBox x:Name="passTB" Padding="15 5" MaxLength="16"
                              PasswordChanged="passTB_PasswordChanged"
@@ -55,7 +56,8 @@
                              Foreground="{DynamicResource MaterialDesignDarkForeground}"
                              Style="{DynamicResource MaterialDesignFilledPasswordBox}"/>
 
-                <TextBlock Text="Пароль.." x:Name="passwordPlaceholder"
+                <TextBlock Text="Пароль.." x:Name="passwordPlaceholder"                           
+                           Margin="{Binding ElementName=passTB, Path=Padding}"
                            Style="{StaticResource PlaceholderTextBlock}"
                            FontSize="{Binding ElementName=passTB, Path=FontSize}"/>
             </Grid>

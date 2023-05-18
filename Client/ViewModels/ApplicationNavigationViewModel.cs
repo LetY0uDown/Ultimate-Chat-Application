@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Client.ViewModels.Messanger;
+using System.Threading.Tasks;
 using WPFLibrary.DI.Attributes;
 using WPFLibrary.Navigation;
 
@@ -16,10 +17,10 @@ public sealed class ApplicationNavigationViewModel : ViewModel, INavigationViewM
 
     public IPage<ViewModel> CurrentPage { get; set; } = null!;
 
-    public override Task Initialize ()
+    public override async Task Initialize ()
     {
         _navigation.NavigationModel = this;
 
-        return base.Initialize();
+        await _navigation.DisplayPage<IPage<ChatViewModel>>();
     }
 }

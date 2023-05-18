@@ -10,7 +10,8 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None" ResizeMode="NoResize"
         Background="Transparent" AllowsTransparency="True"
-        d:DataContext="{d:DesignInstance Type={x:Type vm:AuthNavigationViewModel}}">
+        d:DataContext="{d:DesignInstance Type={x:Type vm:AuthNavigationViewModel}}"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
     
     <Border Background="{StaticResource MaterialDesignDarkBackground}"
             CornerRadius="5">

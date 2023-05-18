@@ -1,5 +1,7 @@
-﻿using Client.Core.Services;
+﻿using Client.Core.Abstract;
+using Client.Core.Services;
 using Client.ViewModels.Authorization;
+using Client.ViewModels.Messanger;
 using Client.Views.Pages;
 using Client.Views.Windows;
 using Microsoft.Extensions.Configuration;
@@ -21,12 +23,23 @@ public partial class App : Application
 
     internal static IHost Host { get; private set; } = null!;
 
+    internal static IWindow Window { get; private set; }
+
     private async void Application_Startup (object sender, StartupEventArgs e)
     {
         Host = ConfigureHosting();
 
-        IWindow loginWindow = new LoginWindow(Host.Services.GetService<AuthNavigationViewModel>()!);
-        await loginWindow.Show();
+        SetMainWindow<LoginWindow>();
+    }
+
+    internal static async void SetMainWindow<TWindow> () where TWindow : IWindow
+    {
+        if (Window is not null)
+            await Window.Close ();
+
+        Window = Host.Services.GetRequiredService<TWindow>();
+
+        await Window.Show ();
     }
 
     private static IHost ConfigureHosting ()
@@ -45,9 +58,14 @@ public partial class App : Application
             services.AddSingleton<IPageFactory, PageFactory>();
             services.AddSingleton<INavigation, Navigation>();
             services.AddSingleton<IApiRequestBuilder, RestRequestBuilder>();
+            services.AddSingleton<IHubFactory, HubFactory>();
 
             services.AddTransient<IPage<LoginViewModel>, LoginPage>();
             services.AddTransient<IPage<RegistrationViewModel>, RegistrationPage>();
+            services.AddTransient<IPage<ChatViewModel>, ChatPage>();
+
+            services.AddSingleton<LoginWindow>();
+            services.AddSingleton<ApplicationWindow>();
         });
 
         return hostBuilder.Build();

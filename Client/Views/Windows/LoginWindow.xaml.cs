@@ -37,6 +37,13 @@ public partial class LoginWindow : Window, IWindow
 
     Task IWindow.Close ()
     {
+        Hide();
+
         return Task.CompletedTask;
+    }
+
+    private void Window_MouseLeftButtonDown (object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        DragMove();
     }
 }

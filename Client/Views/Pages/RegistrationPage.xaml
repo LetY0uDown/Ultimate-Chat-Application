@@ -31,7 +31,7 @@
             </Grid.RowDefinitions>
 
             <!-- Username -->
-            <Grid Margin="10">
+            <Grid Margin="10 15">
                 <TextBox x:Name="usernameTB" Padding="15 5"
                          MaxLength="16" Style="{DynamicResource MaterialDesignFilledTextBox}"
                          Foreground="{DynamicResource MaterialDesignDarkForeground}"
@@ -40,6 +40,7 @@
 
                 <TextBlock Text="Имя Пользователя.."
                            Style="{StaticResource PlaceholderTextBlock}"
+                           Margin="{Binding ElementName=usernameTB, Path=Padding}"
                            IsEnabled="{Binding ElementName=usernameTB,
                                                Path=Text,
                                                Converter={StaticResource
@@ -48,7 +49,7 @@
             </Grid>
 
             <!-- Password -->
-            <Grid Margin="10" Grid.Row="1">
+            <Grid Margin="10 15" Grid.Row="1">
 
                 <PasswordBox x:Name="passTB" Padding="15 5" MaxLength="16"
                              PasswordChanged="passTB_PasswordChanged"
@@ -58,11 +59,12 @@
 
                 <TextBlock Text="Пароль.." x:Name="passwordPlaceholder"                         
                            Style="{StaticResource PlaceholderTextBlock}"
+                           Margin="{Binding ElementName=passTB, Path=Padding}"
                            FontSize="{Binding ElementName=passTB, Path=FontSize}"/>
             </Grid>
-            
+
             <!-- E-Mail -->
-            <Grid Margin="10" Grid.Row="2">
+            <Grid Margin="10 15" Grid.Row="2">
                 <TextBox x:Name="emailTB" Padding="15 5"
                          Style="{DynamicResource MaterialDesignFilledTextBox}"
                          Foreground="{DynamicResource MaterialDesignDarkForeground}"
@@ -73,11 +75,13 @@
                            IsEnabled="{Binding ElementName=emailTB,
                                                Path=Text,
                                                Converter={StaticResource
-                                                          PlaceholderVisibilty}}"                           
+                                                          PlaceholderVisibilty}}" 
+                           Margin="{Binding ElementName=emailTB, Path=Padding}"                          
                            Style="{StaticResource PlaceholderTextBlock}"
-                           FontSize="{Binding ElementName=usernameTB, Path=FontSize}"/>
+                           FontSize="{Binding ElementName=emailTB, Path=FontSize}"/>
             </Grid>
         </Grid>
+
 
         <TextBlock Grid.Row="2" HorizontalAlignment="Center"
                    Text="{Binding DangerText}" FontSize="14"

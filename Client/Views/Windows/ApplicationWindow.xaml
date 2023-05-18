@@ -5,12 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:icon="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
-        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        xmlns:vm="clr-namespace:Client.ViewModels"
         mc:Ignorable="d"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         Title="MainWindow" Height="850" Width="1480"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None" ResizeMode="NoResize"
-        Background="Transparent" AllowsTransparency="True">
+        Background="Transparent" AllowsTransparency="True"
+        d:DataContext="{d:DesignInstance Type={x:Type vm:ApplicationNavigationViewModel}}">
     <Border Background="{StaticResource MaterialDesignDarkBackground}"
             CornerRadius="5">
         <Border Background="{StaticResource AttentionToActionBrush}">
@@ -50,15 +52,31 @@
                 <Grid Grid.Row="1">
                     <Border>
                         <Grid>
-                            <TextBox VerticalAlignment="Top" Style="{StaticResource MaterialDesignFilledTextBox}"
-                                     Margin="10" FontSize="18" MaxLength="20"/>
+                            <!-- Search -->
+                            <Grid VerticalAlignment="Top" Margin="10">
+                                <TextBox x:Name="searchTB" Padding="10 0 0 10"
+                                         MaxLength="32" Style="{DynamicResource MaterialDesignFilledTextBox}"
+                                         Foreground="{DynamicResource MaterialDesignDarkForeground}"
+                                         FontSize="16" TextWrapping="Wrap" VerticalContentAlignment="Center"
+                                         Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBlock Text="Поиск чатов.."
+                                           VerticalAlignment="Bottom"
+                                           Style="{DynamicResource PlaceholderTextBlock}"
+                                           FontSize="{Binding ElementName=searchTB, Path=FontSize}"
+                                           Margin="{Binding ElementName=searchTB, Path=Padding}"
+                                           IsEnabled="{Binding ElementName=searchTB,
+                                                                Path=Text,
+                                                                Converter={StaticResource
+                                                                           PlaceholderVisibilty}}"/>
+                            </Grid>
                         </Grid>
                     </Border>
                 </Grid>
 
                 <Border Grid.Column="1" Grid.Row="1" Background="{StaticResource AttentionToActionBrush}" CornerRadius="10 0 0 0">
                     <Border Background="{StaticResource MaterialDesignDarkBackground}" CornerRadius="10 0 0 0">
-
+                        <Frame NavigationUIVisibility="Hidden" Content="{Binding CurrentPage}"/>
                     </Border>
                 </Border>
             </Grid>

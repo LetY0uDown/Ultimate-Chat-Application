@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Client.Views.Windows;
+using Models;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -35,11 +36,13 @@ public sealed class RegistrationViewModel : ViewModel
                                 .ExecuteAsync(HttpMethod.Post);
 
             if (response.StatusCode != HttpStatusCode.OK) {
-                DangerText = response.Content;
+                DangerText = response.Content?.Replace("\"", "")!;
                 return;
             }
 
-            App.AuthorizeData = JsonSerializer.Deserialize<AuthorizeData>(response.Content);
+            App.AuthorizeData = JsonSerializer.Deserialize<AuthorizeData>(response.Content!)!;
+
+            App.SetMainWindow<ApplicationWindow>();
         }, b => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Email));
 
         RedirectToLoginCommand = new(async o => {
