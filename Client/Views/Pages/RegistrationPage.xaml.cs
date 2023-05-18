@@ -14,18 +14,13 @@ public partial class RegistrationPage : Page, IPage<RegistrationViewModel>
 
     public RegistrationViewModel ViewModel { get; private init; }
 
-    public async Task Display ()
+    public void Display ()
     {
-        await ViewModel.Initialize();
+        Task.Run(ViewModel.Initialize);
 
         DataContext = ViewModel;
 
         InitializeComponent();
-    }
-
-    public async Task Leave ()
-    {
-        await ViewModel.Disable();
     }
 
     private void passTB_PasswordChanged (object sender, System.Windows.RoutedEventArgs e)

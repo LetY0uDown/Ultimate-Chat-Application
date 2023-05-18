@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows;
-using WPF_Library.Navigation;
 using WPFLibrary.DI.Extensions;
 using WPFLibrary.Navigation;
 using WPFLibrary.Web.Interfaces;
@@ -21,21 +20,22 @@ public partial class App : Application
 
     internal static IHost Host { get; private set; } = null!;
 
-    private async void Application_Startup (object sender, StartupEventArgs e)
+    private void Application_Startup (object sender, StartupEventArgs e)
     {
         Host = ConfigureHosting();
 
-        IWindow loginWindow = new LoginWindow(Host.Services.GetService<AuthNavigationViewModel>()!);
-        await loginWindow.Show();
+        var window = Host.Services.GetService<LoginWindow>();
+
+        Current.MainWindow = window;
+        Current.MainWindow.Show();
     }
 
     private static IHost ConfigureHosting ()
     {
-        var builder = new ConfigurationBuilder()
-                          .SetBasePath("C:\\Users\\maksm\\source\\repos\\Ultimate Chat Application\\Client\\Resources\\")
-                          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-        var config = builder.Build();
+        var config = new ConfigurationBuilder()
+                         .SetBasePath("C:\\Users\\maksm\\source\\repos\\Ultimate Chat Application\\Client\\Resources\\")
+                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                         .Build();
 
         var hostBuilder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder().ConfigureServices(services => {
             services.AddSingleton(typeof(IConfiguration), config);
@@ -48,6 +48,9 @@ public partial class App : Application
 
             services.AddTransient<IPage<LoginViewModel>, LoginPage>();
             services.AddTransient<IPage<RegistrationViewModel>, RegistrationPage>();
+
+            services.AddSingleton<LoginWindow>();
+            services.AddSingleton<ApplicationWindow>();
         });
 
         return hostBuilder.Build();

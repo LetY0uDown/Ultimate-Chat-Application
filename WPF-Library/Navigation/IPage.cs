@@ -6,7 +6,13 @@ public interface IPage<out TViewModel> where TViewModel : ViewModel
 {
     TViewModel ViewModel { get; }
 
-    Task Display ();
+    Task Display ()
+    {
+        return Task.CompletedTask;
+    }
 
-    Task Leave ();
+    Task Leave ()
+    {
+        return Task.CompletedTask;
+    }
 }

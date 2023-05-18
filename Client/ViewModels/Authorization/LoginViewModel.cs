@@ -19,6 +19,7 @@ public sealed class LoginViewModel : ViewModel
     {
         _navigation = navigation;
         _requestBuilder = requestBuilder;
+
         LoginCommand = new(async o => {
             DangerText = string.Empty;
 
@@ -34,17 +35,17 @@ public sealed class LoginViewModel : ViewModel
                                 .ExecuteAsync(HttpMethod.Get);
 
             if (response.StatusCode != HttpStatusCode.OK) {
-                DangerText = response.Content;
+                DangerText = response.Content?.Replace("\"", "");
                 return;
             }
 
             App.AuthorizeData = Serializer.Deserialize<AuthorizeData>(response.Content);
 
-            DangerText = App.AuthorizeData.ID;
+            //await _navigation.SetMainWindow<ApplicationWindow>();
         }, b => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password));
 
-        RedirectToRegistrationCommand = new(async o => {
-            await _navigation.DisplayPage<IPage<RegistrationViewModel>>();
+        RedirectToRegistrationCommand = new(o => {
+            _navigation.DisplayPage<IPage<RegistrationViewModel>>();
         });
     }
 

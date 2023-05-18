@@ -1,5 +1,5 @@
 ﻿using Client.ViewModels.Authorization;
-using System.Threading.Tasks;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using WPFLibrary.Navigation;
@@ -15,18 +15,11 @@ public partial class LoginPage : Page, IPage<LoginViewModel>
 
     public LoginViewModel ViewModel { get; private init; }
 
-    public async Task Display ()
+    public void Display ()
     {
-        await ViewModel.Initialize();
-
         DataContext = ViewModel;
 
         InitializeComponent();
-    }
-
-    public Task Leave ()
-    {
-        return Task.CompletedTask;
     }
 
     private void passTB_PasswordChanged (object sender, RoutedEventArgs e)

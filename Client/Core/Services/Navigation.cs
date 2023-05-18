@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using WPFLibrary.Navigation;
 
 namespace Client.Core.Services;
@@ -27,12 +26,12 @@ internal class Navigation : INavigation
         }
     }
 
-    public Task DisplayPage<T> (params (string Title, object Value)[] parameters) where T : IPage<ViewModel>
+    public void DisplayPage<T> (params (string Title, object Value)[] parameters) where T : IPage<ViewModel>
     {
         throw new NotImplementedException();
     }
 
-    public async Task DisplayPage<T> () where T : IPage<ViewModel>
+    public void DisplayPage<T> () where T : IPage<ViewModel>
     {
         var page = _pageFactory.CreatePage<T>();
 
@@ -43,31 +42,30 @@ internal class Navigation : INavigation
         _pages.Add(page);
         _pageIndex = _pages.Count - 1;
 
-        await SetPage(_pageIndex);
+        SetPage(_pageIndex);
     }
 
-    public async Task DisplayNext ()
+    public void DisplayNext ()
     {
         if (_pageIndex >= _pages.Count - 1)
             return;
 
-        await SetPage(++_pageIndex);
+        SetPage(++_pageIndex);
     }
 
-    public async Task DisplayPrevious ()
+    public void DisplayPrevious ()
     {
         if (_pageIndex <= 0)
             return;
 
-        await SetPage(--_pageIndex);
+        SetPage(--_pageIndex);
     }
 
-    private async Task SetPage (int index)
+    private void SetPage (int index)
     {
-        if (NavigationModel.CurrentPage is not null)
-            await NavigationModel.CurrentPage.Leave();
+        NavigationModel?.CurrentPage?.Leave();
 
         NavigationModel.CurrentPage = _pages[index];
-        await NavigationModel.CurrentPage.Display();
+        NavigationModel.CurrentPage.Display();
     }
 }

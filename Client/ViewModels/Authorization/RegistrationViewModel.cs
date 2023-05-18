@@ -30,20 +30,22 @@ public sealed class RegistrationViewModel : ViewModel
                 Email = Email
             };
 
-            var response = await requestBuilder.CreateRequest("Register")
-                                .AddJsonBody(user)
-                                .ExecuteAsync(HttpMethod.Post);
+            var response = await _requestBuilder.CreateRequest("Register")
+                                                .AddJsonBody(user)
+                                                .ExecuteAsync(HttpMethod.Post);
 
             if (response.StatusCode != HttpStatusCode.OK) {
-                DangerText = response.Content;
+                DangerText = response.Content?.Replace("\"", "")!;
                 return;
             }
 
-            App.AuthorizeData = JsonSerializer.Deserialize<AuthorizeData>(response.Content);
+            App.AuthorizeData = JsonSerializer.Deserialize<AuthorizeData>(response.Content)!;
+
+            //await _navigation.SetMainWindow<ApplicationWindow>();
         }, b => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Email));
 
-        RedirectToLoginCommand = new(async o => {
-            await _navigation.DisplayPage<IPage<LoginViewModel>>();
+        RedirectToLoginCommand = new(o => {
+            _navigation.DisplayPage<IPage<LoginViewModel>>();
         });
     }
 

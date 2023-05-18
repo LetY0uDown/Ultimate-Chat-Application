@@ -23,7 +23,7 @@ public sealed class AuthNavigationViewModel : ViewModel, INavigationViewModel
 
     public IPage<ViewModel> CurrentPage { get; set; } = null!;
 
-    public override async Task Initialize ()
+    public override Task Initialize ()
     {
         _requestBuilder.ConfigureOptions(options => {
             options.BaseURL = _configuration["BaseURL"];
@@ -32,6 +32,8 @@ public sealed class AuthNavigationViewModel : ViewModel, INavigationViewModel
 
         _navigation.NavigationModel = this;
 
-        await _navigation.DisplayPage<IPage<LoginViewModel>>();
+        _navigation.DisplayPage<IPage<LoginViewModel>>();
+
+        return Task.CompletedTask;
     }
 }

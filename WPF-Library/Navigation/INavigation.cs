@@ -6,11 +6,9 @@ public interface INavigation
 {
     INavigationViewModel NavigationModel { get; set; }
 
-    Task DisplayPage<T> () where T : IPage<ViewModel>;
+    void DisplayPage<T> () where T : IPage<ViewModel>;
+    void DisplayPage<T> (params (string Title, object Value)[] parameters) where T : IPage<ViewModel>;
 
-    Task DisplayPage<T> (params (string Title, object Value)[] parameters) where T : IPage<ViewModel>;
-
-    Task DisplayNext ();
-
-    Task DisplayPrevious ();
+    void DisplayNext ();
+    void DisplayPrevious ();
 }

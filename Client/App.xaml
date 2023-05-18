@@ -10,46 +10,11 @@
 
             <converter:PlaceholderVisibilityConverter x:Key="PlaceholderVisibilty" />
 
-            <Style TargetType="TextBlock" x:Key="PlaceholderTextBlock">
-                <Style.Setters>
-                    <Setter Property="VerticalAlignment" Value="Center" />
-
-                    <Setter Property="IsHitTestVisible" Value="False" />
-
-                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignDarkForeground}" />
-
-                    <Setter Property="Margin" Value="15 5" />
-                </Style.Setters>
-                
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled" Value="True">
-                        <Trigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     To="1.0"
-                                                     Duration="0:0:0.2" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.EnterActions>
-
-                        <Trigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     To="0.0"
-                                                     Duration="0:0:0.2" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.ExitActions>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            
             <ResourceDictionary.MergedDictionaries>
                 <materialDesign:CustomColorTheme BaseTheme="Dark" PrimaryColor="#6dacd1" SecondaryColor="#0a0e19" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Resources/Styles/PlaceholderTextBlock.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
